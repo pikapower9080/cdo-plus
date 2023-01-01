@@ -24,3 +24,4 @@ jobs:
           commit_message: 'AUTO: Minify source code'
           branch: dist
           create_branch: true
+          push_options: '--force'
