@@ -680,6 +680,7 @@ var topbar = setInterval(function () {
 }, 100);
 //https://forum.code.org/t/dark-mode-view-of-code-studio/35813/4
 /*
+settings example 1
 {
   "customSyntaxNumeric": "#b5cea8",
   "customSyntaxIdentifier": "#9cdcfe",
@@ -719,7 +720,7 @@ var topbar = setInterval(function () {
 }
 */
 /*
-history
+history example 1
 [
   {
     "id": "lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg",
