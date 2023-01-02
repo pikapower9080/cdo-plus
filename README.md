@@ -14,7 +14,7 @@ But never fear! Code.org plus is a [userscript](https://en.wikipedia.org/wiki/Us
 - Project Bookmarks
 
 ![codeEditor](https://user-images.githubusercontent.com/91158513/210185034-c02a42d2-6ff1-477b-a77c-ca0aeab5b39d.png)
-
+![syntaxHighlightin](https://user-images.githubusercontent.com/91158513/210188584-16dbfdb6-92dd-461b-b186-107a278c86ed.gif)
 ## Installation
  1. Install the free Tampermonkey extension [[Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)][[Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)]
  2. Navigate to any page, preferably [studio.code.org](https://studio.code.org)
