@@ -11,17 +11,16 @@ But never fear! Code.org plus is a [userscript](https://en.wikipedia.org/wiki/Us
 - Dark Mode<br>
         - Coding at night and being blinded by the default light theme on Code.org? Dark Mode allows you to turn off the lights, and makes everything dark on most pages.
 - Beautify Button<br>
-        - If you are an ugly coder, than this is for you! The Prettify/Beautify Button cleans up, auto-indents, and seperates your code into new lines to keep it looking good!
+        - If you are an ugly coder, than this is for you! The Prettify/Beautify Button cleans up, auto-indents, and separates your code into new lines to keep it looking good!
 - Fullscreen Stage<br>
-        - Having trouble seeing the tiny Code.org GameLab stage? Click the fullscreen button next to the animation and Code tabs, or just open the CodePlus menu using <kbd>Shift</kbd>, then press the right <kbd>Alt</kbd>! This will blow up the stage to be front and center, allowing you to see it alot easier. (Note: if the stage is to big, then you can adjust the scale size underneath the switch to turn it on.)
+        - Having trouble seeing the tiny Code.org GameLab stage? Click the fullscreen button next to the animation and Code tabs, or just open the CodePlus menu using <kbd>Shift</kbd>, then press the right <kbd>Alt</kbd>! This will blow up the stage to be front and center, allowing you to see it a lot easier. (Note: if the stage is to big, then you can adjust the scale size underneath the switch using the slider.)
 - Custom Header Color<br>
-        - Want to show off your colors? Use this option to change the color of the header at the top of every page!
 - Fixed Header Position<br>
         - For some reason Code.org's Header is not stuck at the top of the screen, and if you scroll down it goes away. This option makes it always stay at the top of the screen.
 - Recent Project List<br>
         - This option allows you to view a list of your 100 most recent projects viewed. (Note: this setting is still in beta, and bugs are expected. As always if you find a bug report it as a Github Issue.)
 - Project Bookmarks<br>
-        - Have a few favorite projects you need to go back and forth on? use this helpfull option to pin up to 4 projects on the home screen for easy acsess.
+        - Have a few favorite projects you need to go back and forth on? use this helpful option to pin up to 4 projects on the home screen for easy access.
 - Auto Login for School Accounts<br>
 ## Installation
  1. Install the free Tampermonkey extension [[Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)][[Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)]
