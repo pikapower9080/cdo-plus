@@ -2,7 +2,7 @@
 // @name         Code.org+
 // @namespace    http://tampermonkey.net/
 // @version      3.2
-// @description  Adds a lot of usefull features to the code.org gamelab
+// @description  Adds a lot of useful features to the code.org gamelab
 // @author       DrSmashsenstien & Pikapower9080
 // @match        https://studio.code.org/s/*/lessons/*/levels/*
 // @match        https://studio.code.org/projects/gamelab/*
@@ -12,26 +12,32 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=code.org
 // @grant        none
 // ==/UserScript==
-var fullscreenStage = false;
-var fSS = document.createElement('div');
-window.cpHistory = [];
-if (!localStorage.getItem("cphistory")) {
-    localStorage.setItem("cphistory", "[]");
+
+window.cdop = {}
+
+cdop.fullscreenStage = false;
+cdop.fSS = document.createElement('div'); // full screen stage
+cdop.localStorageKey = "cdo-plus"
+cdop.history = [];
+if (!localStorage.getItem("cdopHistory")) {
+    localStorage.setItem("cdopHistory", "[]");
 }
-fSS.setAttribute('style', 'top:0px; left:0px; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.75); position:fixed; backdrop-filter:blur(3px);');
-fSS.id = "fSS";
-fSS.style.display = "none";
-fSS.style.zIndex = 9998
-fSS.innerHTML = `<button id="insideFullscreen" style="z-index:9999; position:fixed; top:10px; right:10px;">Exit Fullscreen</button>`
-document.body.appendChild(fSS);
-document.getElementById('insideFullscreen').addEventListener("click", () => { fullscreen(); })
-var codePlusMenu = document.createElement('div');
-codePlusMenu.setAttribute('style', 'padding:5px; position:fixed; top:0px; right:0px; height:100%; width:500px; background-color:rgba(255, 255, 255, 0.75); border:solid 1px #000000; overflow-y:scroll; backdrop-filter:blur(5px);');
-codePlusMenu.style.zIndex = 999999;
-codePlusMenu.id = "codePlusMenu";
-codePlusMenu.active = false;
-codePlusMenu.style.display = "none"
-codePlusMenu.innerHTML = `
+cdop.fSS.id = "fSS";
+cdop.fSS.style.display = "none";
+cdop.fSS.style.zIndex = 9998
+cdop.fSS.innerHTML = `<button id="insideFullscreen">Exit Fullscreen</button>`
+document.body.appendChild(cdop.fSS);
+document.getElementById('insideFullscreen').addEventListener("click", () => { cdop.fullscreen(); })
+cdop.menu = document.createElement('div');
+cdop.menu.style.zIndex = 999999;
+cdop.menu.id = "cdopMenu";
+cdop.menu.active = false;
+cdop.menu.style.display = "none"
+cdop.menu.innerHTML = `
+    <h1>Code.org Plus</h1>
+    <hr>
+    <button onclick="cdop.exportSettings()">Export Settings</button>
+    <button onclick="cdop.importSettings()">Import Settings</button>
     <h2>Colors</h2>
     <hr>
     <h3>Custom Syntax Highlighting</h3>
@@ -56,7 +62,7 @@ codePlusMenu.innerHTML = `
     <input id="customSyntaxGeneral" name="General" type="color">
     </p>
     <p>
-    Parenthasees
+    Parentheses
     <input id="customSyntaxParen" name="Paren" type="color">
     </p>
     <p>
@@ -162,21 +168,28 @@ codePlusMenu.innerHTML = `
         Name
         <input type="text" id="customFeaturedProjects4Name">
     <br>
+    <h2>Nickname</h2>
+    <hr>
+    <label class="switch">
+        <input id="customNicknameOn" type="checkbox">
+        <span class="slider round"></span>
+    </label><br>
+    <input type="text" id="customNickname">
     <input type="text" id="customRecentProject" style="display:none;">
     <input type="text" id="customRecentProjectUrl" style="display:none;">
     <br>
     <br>
 `;
-var beautifyScript = document.createElement("script");
-beautifyScript.src = "https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"
-document.head.appendChild(beautifyScript)
-var syntaxStyles = document.createElement('style');
-syntaxStyles.id = "customSyntaxStyles";
-document.body.appendChild(codePlusMenu)
-document.body.appendChild(syntaxStyles)
+cdop.beautifyScript = document.createElement("script");
+cdop.beautifyScript.src = "https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"
+document.head.appendChild(cdop.beautifyScript)
+cdop.syntaxStyles = document.createElement('style');
+cdop.syntaxStyles.id = "customcdop.syntaxStyles";
+document.body.appendChild(cdop.menu);
+document.body.appendChild(cdop.syntaxStyles);
 //functions
-function syntaxStyling() {
-    const element = document.getElementById('customSyntaxStyles');
+cdop.syntaxStyling = function() {
+    const element = document.getElementById('customcdop.syntaxStyles');
     element.innerHTML = `
     span.ace_identifier {
         color:${document.getElementById('customSyntaxIdentifier').value} !important;
@@ -289,10 +302,52 @@ function syntaxStyling() {
         height:30px;
         border:none;
     }
+    #fSS{
+        top:0px;
+        left:0px;
+        width:100%;
+        height:100%;
+        background-color:rgba(0, 0, 0, 0.75);
+        position:fixed;
+        backdrop-filter:blur(3px);
+    }
+    .fullscreen_button {
+        display: inline-block;
+        vertical-align: top;
+        border-style: solid;
+        border-color: rgb(148, 156, 162);
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+        border-left-width: 1px;
+        margin: 0px 0px 8px;
+        padding: 2px 6px;
+        font-size: 14px;
+        border-radius: 0px 4px 4px 0px;
+        background-color: rgb(255, 255, 255);
+        color:rgb(148, 156, 162);
+    }
+    #cdopMenu{
+        padding:5px;
+        position:fixed;
+        top:0px;
+        right:0px;
+        height:100%;
+        width:500px;
+        background-color:rgba(255, 255, 255, 0.75);
+        border:solid 1px #000000;
+        overflow-y:scroll;
+        backdrop-filter:blur(5px);
+    }
+    #insideFullscreen{
+        z-index:9999;
+        position:fixed;
+        top:10px;
+        right:10px;
+    }
     .switch{position:relative;display:inline-block;width:60px;height:34px;}.switch input {opacity: 0;width: 0;height: 0;}.slider {position: absolute;cursor: pointer;top: 0;left: 0;right: 0;bottom: 0;background-color: #ccc;-webkit-transition: .4s;transition: .4s;}.slider:before {position: absolute;content: "";height: 26px;width: 26px;left: 4px;bottom: 4px;background-color: white;-webkit-transition: .4s;transition: .4s;}input:checked + .slider {background-color: green;}input:focus + .slider {box-shadow: 0 0 1px #2196F3;}input:checked + .slider:before {-webkit-transform: translateX(26px);-ms-transform: translateX(26px);transform: translateX(26px);}.slider.round {border-radius: 34px;}.slider.round:before {border-radius: 50%;}
     `
 };
-const themes = {
+cdop.themes = {
     "vscodeDark": {
         "customSyntaxComment": "#6a9955",
         "customSyntaxString": "#ce9178",
@@ -372,15 +427,15 @@ const themes = {
     }
 
 }
-function loadPrefix(type) {
-    let theme = themes[type]
+cdop.loadPrefix = function(type) {
+    let theme = cdop.themes[type]
     for (let k in theme) {
         document.getElementById(k).value = theme[k]
     }
     saveOptions();
 }
-function mainLoop() {
-    syntaxStyling();
+cdop.mainLoop = function() {
+    cdop.syntaxStyling();
     if (document.querySelectorAll('.lesson-group>div')[1]) {
         if (document.getElementById('customDarkMode').checked) {
             document.querySelectorAll('.lesson-group>div')[1].style.backgroundColor = "rgb(25, 25, 25)";
@@ -391,35 +446,35 @@ function mainLoop() {
 };
 document.addEventListener("keydown", (e) => {
     if (e.key == "Shift" && e.location == 2) {
-        codePlusMenu.active = !codePlusMenu.active;
-        if (codePlusMenu.active) {
-            document.getElementById("codePlusMenu").style.display = "block";
+        cdop.menu.active = !cdop.menu.active;
+        if (cdop.menu.active) {
+            cdop.menu.style.display = "block";
         } else {
-            document.getElementById("codePlusMenu").style.display = "none";
+            cdop.menu.style.display = "none";
         }
     };
     if (e.key == "Alt" && e.location == 2) {
-        if (codePlusMenu.active == false) {
-            if (fullscreenStage) {
-                fullscreen();
-                codePlusMenu.active = false;
-                document.getElementById("codePlusMenu").style.display = "none";
+        if (cdop.menu.active == false) {
+            if (cdop.fullscreenStage) {
+                cdop.fullscreen();
+                cdop.menu.active = false;
+                document.getElementById("cdop.menu").style.display = "none";
 
             } else {
                 document.getElementById('resetButton').click();
                 setTimeout(() => { document.getElementById('runButton').click(); }, 100);
             }
         } else {
-            fullscreen();
-            codePlusMenu.active = false;
-            document.getElementById("codePlusMenu").style.display = "none";
+            cdop.fullscreen();
+            cdop.menu.active = false;
+            document.getElementById("cdop.menu").style.display = "none";
 
         }
     };
-    if (e.key == "Control" && e.location == 2 && codePlusMenu.active) {
-        formatCode();
-        codePlusMenu.active = false;
-        document.getElementById("codePlusMenu").style.display = "none";
+    if (e.key == "Control" && e.location == 2 && cdop.menu.active) {
+        cdop.formatCode();
+        cdop.menu.active = false;
+        document.getElementById("cdop.menu").style.display = "none";
 
     }
 });
@@ -457,35 +512,38 @@ document.body.onload = () => {
                 if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
                     document.getElementById("customRecentProjectUrl").value = location.href;
                 }
-                if (!cpHistory.length == 0) {
+                if (!cdop.history.length == 0) {
                     if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
-                        if (cpHistory[cpHistory.length - 1].id != document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0]) {
-                            cpHistory.push({ id: document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0], url: location.href, title: document.title })
+                        if (cdop.history[cdop.history.length - 1].id != document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0]) {
+                            cdop.history.push({ id: document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0], url: location.href, title: document.title })
                         }
                     } else {
-                        if (cpHistory[cpHistory.length - 1].id != location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0]) {
-                            cpHistory.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
+                        if (cdop.history[cdop.history.length - 1].id != location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0]) {
+                            cdop.history.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
                         }
                     }
-                    if (cpHistory[cpHistory.length - 1].id != document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0]) {
+                    if (cdop.history[cdop.history.length - 1].id != document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0]) {
                         if (window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
-                            cpHistory.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
+                            cdop.history.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
                         } else {
                         }
                     }
                 } else {
                     if (window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
-                        cpHistory.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
+                        cdop.history.push({ id: location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0], url: location.href, title: document.title })
                     } else {
-                        cpHistory.push({ id: document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0], url: location.href, title: document.title })
+                        cdop.history.push({ id: document.querySelector('#project-share>div>div>img').src.replace('/v3/files/', '').split("/")[0], url: location.href, title: document.title })
                     }
                 }
-                if (cpHistory.length > 100) {
-                    cpHistory.splice("1", 0)
+                if (cdop.history.length > 100) {
+                    cdop.history.splice(1, 0)
                 }
                 if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector(".modal-backdrop").click(); saveOptions(); }, 100) }
             }, 1200)
             setTimeout(saveOptions, 1200)
+        }
+        if(document.getElementById('customNicknameOn').checked){
+            setTimeout(()=>{document.getElementById('header_display_name').innerText = document.getElementById('customNickname').value;}, 400)
         }
     }
     if (document.getElementById('customFeaturedProjects').checked && window.location.href.startsWith('https://studio.code.org/home')) {
@@ -541,9 +599,9 @@ document.body.onload = () => {
                 newEle.id = "recentPopup";
                 newEle.setAttribute("style", "position:fixed; left:50%; top:50%; transform:translate(-50%, -50%); width:70%; height:70%; z-index:9999; background-color:rgba(0, 0, 0, 0.76); padding:8px; border-radius:7px; overflow-y:scroll;");
                 newEle.innerHTML = "<button style='position:fixed; top:0px; right:0px;' onclick='this.parentElement.remove()'>x</button><input class='recentSearchBar' placeholder='Search Tab Names' style='position:fixed; top:0px; left:0px;'>";
-                cpHistory.reverse()
-                for (let i = 0; i < cpHistory.length; i++) {
-                    const h = cpHistory[i];
+                cdop.history.reverse()
+                for (let i = 0; i < cdop.history.length; i++) {
+                    const h = cdop.history[i];
                     newEle.innerHTML += `<a href="${h.url}"> <img title="${h.title}" src="https://studio.code.org/v3/files/${h.id}/.metadata/thumbnail.png" width="150px" style="border:solid white 1px; border-radius:5px;"></a>`
                 }
                 document.body.appendChild(newEle);
@@ -559,7 +617,7 @@ document.body.onload = () => {
                     }
                 }
 
-                cpHistory.reverse()
+                cdop.history.reverse()
 
             })
         }, 1000);
@@ -567,11 +625,11 @@ document.body.onload = () => {
 }
 // Handle prefix buttons
 document.querySelectorAll("button.themePrefix").forEach((element) => {
-    element.addEventListener("click", () => { loadPrefix(element.getAttribute("prefix")); });
+    element.addEventListener("click", () => { cdop.loadPrefix(element.getAttribute("prefix")); });
 })
 // Handle saving
-let settingChildren = codePlusMenu.querySelectorAll("input")
-let saveSettings = [];
+cdop.settingChildren = cdop.menu.querySelectorAll("input")
+cdop.saveSettings = [];
 function getSetting(settingId) {
     return document.querySelector(`#${settingId}`);
 }
@@ -579,23 +637,23 @@ function getSettingValue(setting) {
     return setting.value == "on" ? setting.checked : setting.value
 }
 function saveOptions() {
-    localStorage.setItem("cphistory", JSON.stringify(cpHistory));
+    localStorage.setItem("cdopHistory", JSON.stringify(cdop.history));
     let save = {}
-    saveSettings.forEach((setting) => {
+    cdop.saveSettings.forEach((setting) => {
         setting = getSetting(setting)
         if (setting) {
             save[setting.getAttribute("id")] = getSettingValue(setting)
         }
     })
-    localStorage.setItem("cp", JSON.stringify(save))
+    localStorage.setItem(cdop.localStorageKey, JSON.stringify(save))
 }
 function loadOptions() {
-    cpHistory = JSON.parse(localStorage.getItem("cphistory"))
-    if (localStorage.getItem("cdo-plus")) {
-        localStorage.setItem("cp", localStorage.getItem("cdo-plus"));
-        localStorage.removeItem("cdo-plus");
+    cdop.history = JSON.parse(localStorage.getItem("cdopHistory"))
+    if (localStorage.getItem("cp")) {
+        localStorage.setItem(cdop.localStorageKey, localStorage.getItem("cdo-plus"));
+        localStorage.removeItem("cp");
     }
-    const savedSave = localStorage.getItem("cp")
+    const savedSave = localStorage.getItem(cdop.localStorageKey)
     if (savedSave) {
         const saveData = JSON.parse(savedSave)
         if (saveData) {
@@ -609,31 +667,64 @@ function loadOptions() {
                     }
                 }
             }
-            syntaxStyling();
+            cdop.syntaxStyling();
         } else {
             alert("Failed to parse save data")
         }
     }
 }
+cdop.exportSettings = function() {
+    const exportUrl = `data:application/json;charset=utf-8,${encodeURIComponent(localStorage.getItem(cdop.localStorageKey))}`
+    const link = document.createElement("a")
+    link.download = "cdo-plus-backup.json"
+    link.href = exportUrl
+    link.click()
+    link.remove()
+}
+cdop.importSettings = function() {
+    const fileInput = document.createElement("input")
+    fileInput.type = "file"
+    fileInput.accept = "application/json"
+    fileInput.click()
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files[0]) {
+            let file = fileInput.files[0]
+            if (file.type == "application/json") {
+                file.text().then((content) => {
+                    let parsed = JSON.parse(content)
+                    if (parsed) {
+                        localStorage.setItem(cdop.localStorageKey, content)
+                        alert("Success!")
+                        loadOptions()
+                    } else {
+                        alert("Invalid JSON document")
+                    }
+                })
+            } else {
+                alert("File must be in the JSON format")
+            }
+        }
+    })
+}
 loadOptions();
-for (let i in settingChildren) {
-    const setting = settingChildren[i]
+for (let i in cdop.settingChildren) {
+    const setting = cdop.settingChildren[i]
     if (setting && typeof (setting) == "object" && 'getAttribute' in setting && setting.getAttribute("id")) {
-        saveSettings.push(setting.getAttribute("id"))
+        cdop.saveSettings.push(setting.getAttribute("id"))
         setting.addEventListener("input", () => {
             saveOptions()
-            syntaxStyling()
+            cdop.syntaxStyling()
         })
     }
 }
-setInterval(mainLoop, 50);
+setInterval(cdop.mainLoop, 50);
 // Format Button
-function formatCode() {
+cdop.formatCode = function() {
     __mostRecentGameLabInstance.studioApp_.editor.aceEditor.setValue(js_beautify(__mostRecentGameLabInstance.studioApp_.editor.aceEditor.getValue(), { "indent_size": parseInt(document.getElementById('customPrettyButtonIndentLength').value), "indent_with_tabs": document.getElementById('customPrettyButtonTabs').checked }))
 }
-function fullscreen() {
-    fullscreenStage = !fullscreenStage;
-    if (fullscreenStage) {
+cdop.fullscreen = function() {
+    cdop.fullscreenStage = !cdop.fullscreenStage;
+    if (cdop.fullscreenStage) {
         document.getElementById('divGameLab').setAttribute('style', 'height:400px; width:400px; position:fixed; transform:scale(' + document.getElementById('customFullscreenScaleFactor').value + ') translate(-50%, -50%); left:50%; top:50%; z-index:9999;');
         fSS.style.display = "block";
     } else {
@@ -641,7 +732,7 @@ function fullscreen() {
         fSS.style.display = "none";
     };
 };
-var checkIfHeaderMiddleLoaded = setInterval(function () {
+cdop.checkIfHeaderMiddleLoaded = setInterval(function () {
     if (document.querySelector("div.project_info>div")) {
         setTimeout(function () {
             let newBtn = document.createElement("button");
@@ -652,155 +743,29 @@ var checkIfHeaderMiddleLoaded = setInterval(function () {
             if (document.getElementById('customPrettyButton').checked) {
                 document.querySelector("div.project_info>div").appendChild(newBtn);
             };
-            newBtn.addEventListener("click", formatCode);
+            newBtn.addEventListener("click", cdop.formatCode);
             let oldWidth = document.querySelector("div#project_info_container").style.width;
             document.querySelector("div#project_info_container").style.width = `calc(${oldWidth} + 100px)`;
             let oldPadWidth = document.getElementById('left_padding').style.width;
             document.getElementById('left_padding').style.width = `calc(${oldPadWidth} - 100px)`;
         }, 1000);
-        clearInterval(checkIfHeaderMiddleLoaded);
+        clearInterval(cdop.checkIfHeaderMiddleLoaded);
     };
 }, 100);
-var topbar = setInterval(function () {
+cdop.topbar = setInterval(function () {
     if (document.getElementById("playSpaceHeader")) {
         setTimeout(function () {
             let newBtn = document.createElement("button");
             newBtn.innerHTML = 'Fullscreen';
             newBtn.className = "fullscreen_button";
-            newBtn.setAttribute('style', "display: inline-block; vertical-align: top; border-style: solid; border-color: rgb(148, 156, 162); border-top-width: 1px; border-bottom-width: 1px; border-left-width: 1px; margin: 0px 0px 8px; padding: 2px 6px; font-size: 14px; border-radius: 0px 4px 4px 0px; background-color: rgb(255, 255, 255); color:rgb(148, 156, 162);");
             newBtn.type = "button";
             if (document.getElementById('customFullscreenButton').checked) {
                 document.querySelector("#playSpaceHeader>span").appendChild(newBtn);
                 document.getElementById('animationMode').style.borderRadius = "0px";
             };
-            newBtn.addEventListener("click", fullscreen);
+            newBtn.addEventListener("click", cdop.fullscreen);
         }, 1000);
-        clearInterval(topbar);
+        clearInterval(cdop.topbar);
     };
 }, 100);
-//https://forum.code.org/t/dark-mode-view-of-code-studio/35813/4
-/*
-settings example 1
-{
-  "customSyntaxNumeric": "#b5cea8",
-  "customSyntaxIdentifier": "#9cdcfe",
-  "customSyntaxStorage": "#569cd6",
-  "customSyntaxFunction": "#dcdcaa",
-  "customSyntaxGeneral": "#d4d4d4",
-  "customSyntaxParen": "#da70d6",
-  "customSyntaxSupport": "#9cdcfe",
-  "customSyntaxString": "#ce9178",
-  "customSyntaxComment": "#6a9955",
-  "customHeaderColor": "#b80000",
-  "customDebugColor": "#d60000",
-  "customCodeColor": "#000000",
-  "customDarkMode": true,
-  "customPrettyButton": true,
-  "customPrettyButtonIndentLength": "2",
-  "customPrettyButtonTabs": true,
-  "customFullscreenButton": true,
-  "customFullscreenScaleFactor": "1.5",
-  "customFixedHeaderPos": true,
-  "customAutoLogin": true,
-  "customAutoLoginSectionNumber": "ZHMHYP",
-  "customAutoLoginUserNumber": "3",
-  "customAutoLoginPassword": "made trade",
-  "customAutoToolbox": true,
-  "customFeaturedProjects": true,
-  "customFeaturedProjects1Url": "https://studio.code.org/projects/gamelab/lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg",
-  "customFeaturedProjects1Name": "Covid 19 Shooter",
-  "customFeaturedProjects2Url": "https://studio.code.org/projects/gamelab/lGgvfqnucydwidrkX_NHO7hwzzzRd2Zl3A10V7XfTiw",
-  "customFeaturedProjects2Name": "Aquarium Scene",
-  "customFeaturedProjects3Url": "https://studio.code.org/projects/gamelab/H1lpxKtCRgLh3V7UeP12jgw3_V5rgzvrj9vmlNo8sT0",
-  "customFeaturedProjects3Name": "Pidgeotto Mail",
-  "customFeaturedProjects4Url": "https://studio.code.org/projects/gamelab/O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o",
-  "customFeaturedProjects4Name": "Plants vs Zombies",
-  "customRecentProject": "O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o",
-  "customRecentProjectUrl": "https://studio.code.org/projects/gamelab/O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o/view"
-}
-*/
-/*
-history example 1
-[
-  {
-    "id": "lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg",
-    "url": "https://studio.code.org/projects/gamelab/lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg/edit",
-    "title": "Game Lab - Code.org"
-  },
-  {
-    "id": "O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o",
-    "url": "https://studio.code.org/projects/gamelab/O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o/view",
-    "title": "Plants vs Zombies - Game Lab - Code.org"
-  },
-  {
-    "id": "H1lpxKtCRgLh3V7UeP12jgw3_V5rgzvrj9vmlNo8sT0",
-    "url": "https://studio.code.org/projects/gamelab/H1lpxKtCRgLh3V7UeP12jgw3_V5rgzvrj9vmlNo8sT0/edit",
-    "title": "My Project - Game Lab - Code.org"
-  },
-  {
-    "id": "lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg",
-    "url": "https://studio.code.org/projects/gamelab/lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg/edit",
-    "title": "Code.org"
-  },
-  {
-    "id": "O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o",
-    "url": "https://studio.code.org/projects/gamelab/O1_CBy2qjM2_v6EHiXoSjMm7o0ctKCy5eHSQDqZnW_o/view",
-    "title": "Plants vs Zombies - Game Lab - Code.org"
-  },
-  {
-    "id": "CVHNjwZfcibFWOwSWg59JkHIvFTkOmYpj_xWE8829mQ",
-    "url": "https://studio.code.org/projects/gamelab/CVHNjwZfcibFWOwSWg59JkHIvFTkOmYpj_xWE8829mQ/view",
-    "title": "Basic Tower Defense - Game Lab - Code.org"
-  },
-  {
-    "id": "4fCMc4exEvpjxFXFqrdSC5YJUeTeZnF57IMz3uceJ48",
-    "url": "https://studio.code.org/projects/gamelab/4fCMc4exEvpjxFXFqrdSC5YJUeTeZnF57IMz3uceJ48/view",
-    "title": "impossible game - Game Lab - Code.org"
-  },
-  {
-    "id": "JkSTE2kcYcExWyGHR80hrWb9RGS9qgGe3JVCwBoKI6g",
-    "url": "https://studio.code.org/projects/gamelab/JkSTE2kcYcExWyGHR80hrWb9RGS9qgGe3JVCwBoKI6g/view",
-    "title": "Remix: The Lock - Game Lab - Code.org"
-  },
-  {
-    "id": "xf_HIP_CjfCwM2c2bPdDCZwQ9nQLlhnubkCikG3K9M4",
-    "url": "https://studio.code.org/projects/gamelab/xf_HIP_CjfCwM2c2bPdDCZwQ9nQLlhnubkCikG3K9M4/view",
-    "title": "balloon buster 1 - Game Lab - Code.org"
-  },
-  {
-    "id": "8TXYr7dkjjCWgiJoBY3shPhDhj7BY2j3n79veXrEoko",
-    "url": "https://studio.code.org/projects/gamelab/8TXYr7dkjjCWgiJoBY3shPhDhj7BY2j3n79veXrEoko/view",
-    "title": "MARIO - Game Lab - Code.org"
-  },
-  {
-    "id": "HbAzqGjRQ0Yi3sz9WwOWLDUk6Bl0HjHV8ABSoABhqj0",
-    "url": "https://studio.code.org/projects/gamelab/HbAzqGjRQ0Yi3sz9WwOWLDUk6Bl0HjHV8ABSoABhqj0/view",
-    "title": "Super Mario Game - Game Lab - Code.org"
-  },
-  {
-    "id": "QtLZg-g1C2BTAtd4kDuCwNJNw7akuqM6usX8t8_lndc",
-    "url": "https://studio.code.org/projects/gamelab/QtLZg-g1C2BTAtd4kDuCwNJNw7akuqM6usX8t8_lndc/view",
-    "title": "Sonic Green Hill Zone! - Game Lab - Code.org"
-  },
-  {
-    "id": "RQuZftQBEsR7M6qDV2VlTKcyS405F9Wx55BAjqADN8k",
-    "url": "https://studio.code.org/projects/gamelab/RQuZftQBEsR7M6qDV2VlTKcyS405F9Wx55BAjqADN8k/view",
-    "title": "hardest game of minecraft - Game Lab - Code.org"
-  },
-  {
-    "id": "4RHd62pt_ejt6B03FBex6N5-dPfEggoLL7wwjW36lF0",
-    "url": "https://studio.code.org/projects/gamelab/4RHd62pt_ejt6B03FBex6N5-dPfEggoLL7wwjW36lF0/view",
-    "title": "project 1 - Game Lab - Code.org"
-  },
-  {
-    "id": "UDxxrq-iHVkH1yH04OXGCrs_swbwar6NuDi_P0FBYYo",
-    "url": "https://studio.code.org/projects/gamelab/UDxxrq-iHVkH1yH04OXGCrs_swbwar6NuDi_P0FBYYo/view",
-    "title": "Remix: Remix: THE LEGEND OF ZELDA - Game Lab - Code.org"
-  },
-  {
-    "id": "lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg",
-    "url": "https://studio.code.org/projects/gamelab/lOtzeyOI3FNFFWRWgN-o3Ti7KmXGKlYKHmVdKl5x7Sg/edit",
-    "title": "Game Lab - Code.org"
-  }
-]
-*/
+console.log('%cCode.org Plus Loaded!', 'color:white; font-size:xx-large; -webkit-text-stroke: 1.25px black; ')
