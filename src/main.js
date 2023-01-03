@@ -504,7 +504,7 @@ document.body.onload = () => {
         if (document.getElementById('customFeaturedProjects').checked) {
             setTimeout(()=>{document.getElementById('runButton').click();}, 500)
 
-            if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector('.project_share').click() }, 1000) }
+            if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector('.project_share').click() }, 2000) }
             setTimeout(() => {
                 if (window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
                     setTimeout(() => { document.getElementById('customRecentProject').value = location.href.replace('https://studio.code.org/projects/gamelab/', '').split("/")[0] }, 0);
@@ -541,8 +541,8 @@ document.body.onload = () => {
                     cdop.history.splice(1, 0)
                 }
                 if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector(".modal-backdrop").click(); saveOptions(); }, 100) }
-            }, 1600)
-            setTimeout(saveOptions, 1700)
+            }, 2600)
+            setTimeout(saveOptions, 2700)
         }
     }
         if(document.getElementById('customNicknameOn').checked){
