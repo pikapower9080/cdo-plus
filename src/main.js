@@ -491,15 +491,15 @@ document.body.onload = () => {
             document.getElementById('login_button').click();
         };
     };
+    setTimeout(()=>{
     if (document.getElementById('customFixedHeaderPos').checked) {
         document.getElementsByClassName('header')[0].style.position = "fixed";
         document.getElementsByClassName('header')[0].style.zIndex = 998;
     };
     if (document.getElementById('customAutoToolbox').checked && window.location.href.startsWith('https://studio.code.org/projects/gamelab/') || window.location.href.startsWith('https://studio.code.org/s/')) {
-        setTimeout(() => {
             document.getElementById("hide-toolbox-icon").click();
-        }, 1000);
     }
+    }, 1000)
     if (window.location.href.startsWith('https://studio.code.org/s/') || window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
         if (document.getElementById('customFeaturedProjects').checked) {
             if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector('.project_share').click() }, 1000) }
@@ -542,10 +542,10 @@ document.body.onload = () => {
             }, 1200)
             setTimeout(saveOptions, 1200)
         }
+    }
         if(document.getElementById('customNicknameOn').checked){
             setTimeout(()=>{document.getElementById('header_display_name').innerText = document.getElementById('customNickname').value;}, 400)
         }
-    }
     if (document.getElementById('customFeaturedProjects').checked && window.location.href.startsWith('https://studio.code.org/home')) {
         document.querySelector('.container.main>div[style]').innerHTML = `
         <div data-radium="true" style="font-size: 24px; line-height: 26px; color: rgb(91, 103, 112); float: left; padding-right: 20px;">Featured Projects</div>
