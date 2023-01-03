@@ -502,6 +502,7 @@ document.body.onload = () => {
     }, 1000)
     if (window.location.href.startsWith('https://studio.code.org/s/') || window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
         if (document.getElementById('customFeaturedProjects').checked) {
+            document.getElementById('runButton').click(); 
             if (!window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) { setTimeout(() => { document.querySelector('.project_share').click() }, 1000) }
             setTimeout(() => {
                 if (window.location.href.startsWith('https://studio.code.org/projects/gamelab/')) {
