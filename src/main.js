@@ -1,5 +1,29 @@
 window.cdop = {}
 
+// Load dependencies
+cdop.notiflixNotify = document.createElement("script")
+cdop.notiflixNotify.src = "https://cdn.jsdelivr.net/npm/notiflix@3.2.5/dist/notiflix-notify-aio-3.2.5.min.js"
+document.head.appendChild(cdop.notiflixNotify)
+
+try {
+    cdop.notiflixNotify.addEventListener("load", () => {
+        Notiflix.Notify.init({
+            position: 'right-bottom',
+            cssAnimationStyle: 'from-bottom',
+            zindex: 999999,
+            success: {
+                background: "rgba(50, 198, 130, 0.7)"
+            }
+        })
+        if (!sessionStorage.getItem("cdo-plus-loaded")) {
+            sessionStorage.setItem("cdo-plus-loaded", true)
+            Notiflix.Notify.success("Code.org plus successfully loaded!", {timeout: 1000})
+        }
+    })
+} catch(error) {
+    console.warn("Code.org plus failed to setup Notiflix Notify: \n" + error)
+}
+
 cdop.fullscreenStage = false;
 cdop.fSS = document.createElement('div'); // full screen stage
 cdop.localStorageKey = "cdo-plus"
@@ -14,7 +38,7 @@ cdop.fSS.innerHTML = `<button id="insideFullscreen">Exit Fullscreen</button>`
 document.body.appendChild(cdop.fSS);
 document.getElementById('insideFullscreen').addEventListener("click", () => { cdop.fullscreen(); })
 cdop.menu = document.createElement('div');
-cdop.menu.style.zIndex = 999999;
+cdop.menu.style.zIndex = 9999;
 cdop.menu.id = "cdopMenu";
 cdop.menu.active = false;
 cdop.menu.style.display = "none"
@@ -663,7 +687,7 @@ function loadOptions() {
             }
             cdop.syntaxStyling();
         } else {
-            alert("Failed to parse save data")
+            Notiflix.Notify.failure("Failed to parse save data")
         }
     }
 }
@@ -688,14 +712,14 @@ cdop.importSettings = function() {
                     let parsed = JSON.parse(content)
                     if (parsed) {
                         localStorage.setItem(cdop.localStorageKey, content)
-                        alert("Success!")
+                        Notiflix.Notify.success("Success!")
                         loadOptions()
                     } else {
-                        alert("Invalid JSON document")
+                        Notiflix.Notify.failure("Invalid JSON document")
                     }
                 })
             } else {
-                alert("File must be in the JSON format")
+                Notiflix.Notify.failure("File must be in the JSON format.")
             }
         }
     })
