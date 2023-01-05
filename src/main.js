@@ -13,11 +13,31 @@ try {
             zindex: 999999,
             success: {
                 background: "rgba(50, 198, 130, 0.7)"
-            }
+            },
+            info: {background:"rgba(38, 192, 211, 0.7)"}
         })
         if (!sessionStorage.getItem("cdo-plus-loaded")) {
             sessionStorage.setItem("cdo-plus-loaded", true)
             Notiflix.Notify.success("Code.org plus successfully loaded!", {timeout: 1000})
+            // Check for updates
+            fetch("https://api.github.com/repos/pikapower9080/cdo-plus/commits/main").then((res) => {
+                res.json().then((data) => {
+                    let sha = data.sha
+                    if (!localStorage.getItem("cdo-plus-update-sha")) {
+                        localStorage.setItem("cdo-plus-update-sha", sha)
+                    } else {
+                        let oldSha = localStorage.getItem("cdo-plus-update-sha")
+                        if (oldSha !== sha) {
+                            localStorage.setItem("cdo-plus-update-sha", sha)
+                            setTimeout(() => {
+                                Notiflix.Notify.info("Code.org plus has been updated!", () => {
+                                    window.open(data.html_url)
+                                })
+                            }, 200)
+                        }
+                    }
+                }).catch(console.warn)
+            }).catch(console.warn)
         }
     })
 } catch(error) {
