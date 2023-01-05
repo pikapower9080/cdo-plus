@@ -1,18 +1,3 @@
-// ==UserScript==
-// @name         Code.org+
-// @namespace    http://tampermonkey.net/
-// @version      3.2
-// @description  Adds a lot of useful features to the code.org gamelab
-// @author       DrSmashsenstien & Pikapower9080
-// @match        https://studio.code.org/s/*/lessons/*/levels/*
-// @match        https://studio.code.org/projects/gamelab/*
-// @match        https://studio.code.org/sections/*
-// @match        https://studio.code.org/users/sign_in
-// @match        https://studio.code.org/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=code.org
-// @grant        none
-// ==/UserScript==
-
 window.cdop = {}
 
 cdop.fullscreenStage = false;
@@ -38,6 +23,11 @@ cdop.menu.innerHTML = `
     <hr>
     <button onclick="cdop.exportSettings()">Export Settings</button>
     <button onclick="cdop.importSettings()">Import Settings</button>
+    <h3>Menu Hotkey</h3>
+    <select id="customMenuHotkey">
+        <option value="rightShift">Right Shift</option>
+        <option value="leftShift">Left Shift</option>
+    </select>
     <h2>Colors</h2>
     <hr>
     <h3>Custom Syntax Highlighting</h3>
@@ -445,7 +435,9 @@ cdop.mainLoop = function() {
     }
 };
 document.addEventListener("keydown", (e) => {
-    if (e.key == "Shift" && e.location == 2) {
+    let menuHotkeyLocation = document.getElementById("customMenuHotkey").value
+    menuHotkeyLocation == "leftShift" ? menuHotkeyLocation = 1 : menuHotkeyLocation = 2
+    if (e.key == "Shift" && e.location == menuHotkeyLocation) {
         cdop.menu.active = !cdop.menu.active;
         if (cdop.menu.active) {
             cdop.menu.style.display = "block";
@@ -628,7 +620,7 @@ document.querySelectorAll("button.themePrefix").forEach((element) => {
     element.addEventListener("click", () => { cdop.loadPrefix(element.getAttribute("prefix")); });
 })
 // Handle saving
-cdop.settingChildren = cdop.menu.querySelectorAll("input")
+cdop.settingChildren = cdop.menu.querySelectorAll("input, select")
 cdop.saveSettings = [];
 function getSetting(settingId) {
     return document.querySelector(`#${settingId}`);
