@@ -329,7 +329,12 @@ cdop.syntaxStyling = function() {
     .E65uU5qEZjZEq7MK8tJT {
        background-color:${document.getElementById('customCodeColor').value};
     }
-
+    .modal-body {
+        background-color:${document.getElementById('customDarkMode').checked == true ? "black" : ""} !important;
+    }
+    .modal-body>*{
+        color:${document.getElementById('customDarkMode').checked == true ? "white" : ""} !important;
+    }
     /*Code Plus styles*/
     input[type="color"] {
         width: 50px;
