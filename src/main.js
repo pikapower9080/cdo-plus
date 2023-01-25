@@ -531,6 +531,9 @@ document.body.onload = () => {
             document.getElementById('login_button').disabled = "";
             document.getElementById('login_button').click();
         };
+        if (window.location.href === "https://studio.code.org/join") {
+            window.location.href = "https://studio.code.org/users/sign_in"
+        }
     };
     setTimeout(()=>{
     if (document.getElementById('customFixedHeaderPos').checked) {
