@@ -477,9 +477,9 @@ cdop.mainLoop = function() {
     cdop.syntaxStyling();
     if (document.querySelectorAll('.lesson-group>div')[1]) {
         if (document.getElementById('customDarkMode').checked) {
-            document.querySelectorAll('.lesson-group>div')[1].style.backgroundColor = "rgb(25, 25, 25)";
+            document.querySelectorAll('.lesson-group>div').forEach((ele) => {ele.style.backgroundColor = "rgb(25, 25, 25)"})
         } else {
-            document.querySelectorAll('.lesson-group>div')[1].style.backgroundColor = ""
+            document.querySelectorAll('.lesson-group>div').forEach((ele) => {ele.style.backgroundColor = "#cfc9de"})
         }
     }
 };
