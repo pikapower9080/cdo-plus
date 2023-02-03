@@ -338,6 +338,12 @@ cdop.syntaxStyling = function() {
     div.lesson-group > div:nth-of-type(1) {
         background-color: ${document.getElementById('customDarkMode').checked ? "rgb(89, 84, 84)" : "#7665a0"};
     }
+    .droplet-main-canvas {
+        background-color:${document.getElementById('customDarkMode').checked == true ? "black" : ""} !important;
+    }
+    .droplet-gutter {
+        background-color:${document.getElementById('customDarkMode').checked == true ? "black" : ""} !important;
+    }
     /*Code Plus styles*/
     input[type="color"] {
         width: 50px;
